@@ -1,6 +1,6 @@
+#include"apue.h"
 #include<pthread.h>
-#include<stdio.h>
-#include<stdlib.h>
+
 
 pthread_t ntid;
 
@@ -29,11 +29,7 @@ main(void)
 
 	err = pthread_create(&ntid, NULL, thr_fn, NULL);
 	if(err != 0)
-	{
-		printf("can't create thread");
-		exit(1);
-	}
-
+		err_exit(err, "can't create thread");
 	printids("main thread:");
 	sleep(1);
 	exit(0);
