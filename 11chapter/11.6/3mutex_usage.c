@@ -5,7 +5,6 @@
 #define		HASH(id)	(((unsigned long)id)%NHASH)
 
 struct	foo *fh[NHASH];
-
 pthread_mutex_t	hashlock = PTHREAD_MUTEX_INITIALIZER;
 
 struct foo
@@ -14,6 +13,7 @@ struct foo
 	pthread_mutex_t		f_lock;
 	int			f_id;
 	struct foo		*f_next;	/*protected by hashlock*/
+	/*...more stuff here...*/
 };
 
 struct foo*
@@ -37,8 +37,9 @@ foo_alloc(int id)
 		fh[idx] = fp;
 		pthread_mutex_lock(&fp->f_lock);
 		pthread_mutex_unlock(&hashlock);
-
+		
 		/*...continue initialization...*/
+		
 		pthread_mutex_unlock(&fp->f_lock);
 	}
 
@@ -63,7 +64,7 @@ foo_find(int id)
 	{
 		if(fp->f_id == id)
 		{
-			foo_hold(fp);
+			fp->f_count++;
 			break;
 		}
 	}
@@ -77,42 +78,27 @@ foo_rele(struct foo *fp) /* release a reference to the object */
 	struct foo	*tfp;
 	int		idx;
 
-	pthread_mutex_lock(&fp->f_lock);
-	if (fp->f_count == 1)		/*last reference*/
+	pthread_mutex_lock(&hashlock);
+	if (--fp->f_count == 0)		/*last reference, remove from list*/
 	{
-		pthread_mutex_unlock(&fp->f_lock);
-		pthread_mutex_lock(&hashlock);
-		pthread_mutex_lock(&fp->f_lock);
-		/* need to recheck the condition */
-		if (fp->f_count != 1)
-		{
-			fp->f_count--;
-			pthread_mutex_unlock(&fp->f_lock);
-			pthread_mutex_unlock(&hashlock);
-
-			return;
-		}
-		/* remove from list */
-		idx = HASH(fp->id);
+		idx = HASH(fp->f_id);
 		tfp = fh[idx];
-		if(tfp == fp)
+		if (tfp == fp)
 		{
 			fh[idx] = fp->f_next;
 		}
 		else
 		{
-			while (tfp->f_next != fp)
+			while(tfp->f_next != fp)
 				tfp = tfp->f_next;
 			tfp->f_next = fp->f_next;
 		}
 		pthread_mutex_unlock(&hashlock);
-		pthread_mutex_unlock(&fp->f_lock);
 		pthread_mutex_destroy(&fp->f_lock);
 		free(fp);
 	}
 	else
 	{
-		fp->f_count--;
-		pthread_mutex_unlock(&fp->f_lock);
+		pthread_mutex_unlock(&hashlock);
 	}
 }
