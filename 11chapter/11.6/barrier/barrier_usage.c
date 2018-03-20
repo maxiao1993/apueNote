@@ -12,12 +12,12 @@ long snums[NUMNUM];
 
 pthread_barrier_t b;
 
-#ifdef	SOLARIS
+//#ifdef	SOLARIS
 #define heapsort qsort
-#else
-extern int heapsort(void *, size_t, size_t,
-		int (*)(const void *, const void *));
-#endif
+//#else
+//extern int heapsort(void *, size_t, size_t,
+//		int (*)(const void *, const void *));
+//#endif
 
 /*
  *	Compare two long integers (helper function for heapsort)
@@ -50,7 +50,7 @@ thr_fn(void *arg)
 	/*
 	 *	Go off and perform more work ...
 	 */
-	return ((void *)0)
+	return ((void *)0);
 }
 
 /*
@@ -89,6 +89,13 @@ main()
 	double		elapsed;
 	int		err;
 	pthread_t	tid;
+	
+	/*
+	 *	Create the initial set of numbers to sort.
+	 */
+	srandom(1);
+	for(i = 0; i < NUMNUM; i++)
+		nums[i] = random();
 
 	/*
 	 *	Create 8 threads to sort the numbers.
@@ -111,5 +118,9 @@ main()
 	startusec = start.tv_sec * 1000000 + start.tv_usec;
 	endusec = end.tv_sec * 1000000 + end.tv_usec;
 	elapsed = (double)(endusec - startusec) / 1000000.0;
+	printf("sort took %.4f seconds\n", elapsed);
+	for (i = 0; i< NUMNUM; i++)
+		printf("%ld\n", snums[i]);
+	exit(0);
 
 }
