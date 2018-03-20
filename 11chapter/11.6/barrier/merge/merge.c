@@ -39,14 +39,13 @@ main()
 {	
 	int j;
 
-	int nums[NUMNUM] = {2,3,5,7,5,6,10,12,1,7,8,10,3,5,7,9};
-	int snums[NUMNUM];
 	merge();
 	
 	for (j = 0; j < NUMNUM; j++)
 	{
-		printf("%d/t",snums[j]);
+		printf("%d ",snums[j]);
 	}
+	printf("\n");
 
 	return 0;
 }
