@@ -1,8 +1,4 @@
-#include<unistd.h>
-#include<stdio.h>
-#include<stdlib.h>
-
-#define MAXLINE 4096
+#include"apue.h"
 
 int
 main(void)
@@ -12,22 +8,17 @@ main(void)
 	pid_t 	pid;
 	char	line[MAXLINE];
 
-	if (pipe(fd) < 0)
-	{
-		printf("pipe error");
-		exit(1);
-	}
+	if (pipe(fd) < 0)				/* #include<unistd.h> */
+		err_sys("pipe error");
+
 	if ((pid = fork()) < 0)
-	{
-		printf("fork error");
-		exit(1);
-	}
-	else if (pid > 0)
+		err_sys("fork error");
+	else if (pid > 0)				/* parent */
 	{
 		close(fd[0]);
 		write(fd[1], "hello world\n" , 12);
 	}
-	else 
+	else 						/* child */
 	{
 		close(fd[1]);
 		n = read(fd[0],line,MAXLINE);
