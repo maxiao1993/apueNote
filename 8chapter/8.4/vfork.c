@@ -1,6 +1,4 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<unistd.h>
+#include"apue.h"
 
 int globvar = 6;
 
@@ -13,10 +11,7 @@ main(void)
 	var = 88;
 	printf("before vfork\n");
 	if((pid = vfork())<0)
-	{
-		printf("vfork error");
-		exit(1);
-	}
+		err_sys("vfork error");
 	else if (pid == 0)
 	{
 		globvar++;
