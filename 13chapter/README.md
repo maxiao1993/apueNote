@@ -2,4 +2,6 @@
 I read one paper all day , so tired.
 life is so tough.
 
-haha ,you can guess what i done today!
+haha ,you can guess what I done today!
+
+Learn some English.
