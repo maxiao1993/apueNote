@@ -1,2 +1,3 @@
-##read
-##write
+## read
+## write
+## read = 0
