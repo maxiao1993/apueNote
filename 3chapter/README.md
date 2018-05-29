@@ -8,3 +8,5 @@ delete 'else' , but performance not good.
 play game again.
 
 learn algorithm
+
+learn again
