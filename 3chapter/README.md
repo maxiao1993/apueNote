@@ -10,3 +10,5 @@ play game again.
 learn algorithm
 
 learn again
+
+a new begin
